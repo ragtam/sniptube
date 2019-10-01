@@ -1,5 +1,4 @@
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
-import * as fromScoreBoard from './scoreboard.reducer';
 import * as fromPlayer from './player.reducer';
 import * as fromRouter from '@ngrx/router-store';
 import { Params, RouterStateSnapshot } from '@angular/router';
@@ -11,13 +10,11 @@ export interface RouterStateUrl {
 }
 
 export interface State {
-  scoreboard: fromScoreBoard.State;
   player: fromPlayer.State;
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
 }
 
 export const reducers: ActionReducerMap<State> = {
-  scoreboard: fromScoreBoard.reducer,
   player: fromPlayer.reducer,
   routerReducer: fromRouter.routerReducer
 };

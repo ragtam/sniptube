@@ -1,28 +1,17 @@
 <nav>
   <button
     routerLink="/player"
-    [queryParams]="{
-      videoId: '_LjcTPkLIxE',
-      start: 90,
-      end: 100,
-      playbackRate: 0.75
-    }"
+    [queryParams]="playConfig"
     routerLinkActive="active"
   >
-    Play slowly
+    Play (normal speed)
   </button>
   <button
     routerLink="/player"
-    [queryParams]="{
-      videoId: '_LjcTPkLIxE',
-      start: 55,
-      end: 70,
-      playbackRate: 1
-    }"
+    [queryParams]="playSlowlyConfig"
     routerLinkActive="active"
   >
-    play
+    Play (0.75 speed)
   </button>
-  <button routerLink="/scoreboard" routerLinkActive="active">Scoreboard</button>
 </nav>
 <router-outlet></router-outlet>

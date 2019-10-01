@@ -2,16 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from '../store/reducers';
 import * as fromRoot from '../store/reducers';
-import { PlayerOptions, YtPlayerService, StateType } from 'yt-player-angular';
+import {
+  PlayerOptions,
+  YtPlayerService,
+  StateType,
+  StateChange
+} from 'yt-player-angular';
 import { map, switchMap, filter, tap } from 'rxjs/operators';
 import { Params } from '@angular/router';
-import { of, combineLatest } from 'rxjs';
+import { of, combineLatest, Observable } from 'rxjs';
 
 export interface PlayerConfig {
   videoId: string;
-  start: number;
-  end: number;
-  playbackRate: number;
+  start?: number;
+  end?: number;
+  playbackRate?: number;
 }
 
 @Component({
@@ -32,52 +37,68 @@ export class PlayerComponent implements OnInit {
   private shouldPlayFromStart: boolean;
   private isPlaybackRateSetUp: boolean;
 
-  constructor(
+  private get stateAndConfig$(): Observable<[StateChange, PlayerConfig]> {
+    return this.store.pipe(
+      select(fromRoot.getRouter),
+      map(({ queryParams }) => this.toPlayerConfig(queryParams)),
+      tap(config => this.initializePlayer(config)),
+      switchMap(config =>
+        combineLatest(this.ytPlayerService.stateChange$, of(config))
+      ),
+      filter(([stateChange]) => stateChange.type === StateType.PlaybackProgress)
+    );
+  }
+
+  public constructor(
     private store: Store<State>,
     private ytPlayerService: YtPlayerService
   ) {}
 
-  ngOnInit() {
-    this.store
-      .pipe(
-        select(fromRoot.getRouter),
-        map(({ queryParams }) => this.toPlayerConfig(queryParams)),
-        tap(config => this.initializePlayer(config)),
-        switchMap(config =>
-          combineLatest(this.ytPlayerService.stateChange$, of(config))
-        ),
-        filter(
-          ([stateChange]) => stateChange.type === StateType.PlaybackProgress
-        )
-      )
-      .subscribe(([stateChange, playerConfig]) => {
-        if (!this.isPlaybackRateSetUp && playerConfig.playbackRate > 0) {
-          this.ytPlayerService.setPlaybackRate(playerConfig.playbackRate);
-          this.isPlaybackRateSetUp = true;
-        }
-        this.playSnippet(stateChange.payload, playerConfig);
-      });
+  public ngOnInit(): void {
+    this.stateAndConfig$.subscribe(([stateChange, playerConfig]) => {
+      if (this.shouldSetPlaybackRate(playerConfig)) {
+        this.setPlaybackRate(playerConfig);
+      }
+      this.playSnippet(stateChange.payload, playerConfig);
+    });
   }
 
   private playSnippet(progress: number, config: PlayerConfig): void {
-    if (this.shouldPlayFromStart && config.start > 0 && progress > 0) {
-      this.ytPlayerService.seek(config.start);
-      this.shouldPlayFromStart = false;
-    } else if (
-      !this.shouldPlayFromStart &&
-      config.end > 0 &&
-      progress > config.end - 1
-    ) {
+    if (this.shouldSeek(config, progress)) {
+      this.seek(config.start);
+    } else if (this.shouldReset(config, progress)) {
       this.shouldPlayFromStart = true;
     }
+  }
+
+  private seek(start: number): void {
+    this.ytPlayerService.seek(start);
+    this.shouldPlayFromStart = false;
+  }
+
+  private setPlaybackRate(config: PlayerConfig): void {
+    this.ytPlayerService.setPlaybackRate(config.playbackRate);
+    this.isPlaybackRateSetUp = true;
+  }
+
+  private shouldSeek(config: PlayerConfig, progress: number): boolean {
+    return !!(this.shouldPlayFromStart && config.start && progress);
+  }
+
+  private shouldReset(config: PlayerConfig, progress: number): boolean {
+    return !this.shouldPlayFromStart && config.end && progress > config.end - 1;
+  }
+
+  private shouldSetPlaybackRate(config: PlayerConfig): boolean {
+    return !this.isPlaybackRateSetUp && config.playbackRate > 0;
   }
 
   private toPlayerConfig(params: Params): PlayerConfig {
     return {
       videoId: params.videoId,
-      start: Number(params.start) || -1,
-      end: Number(params.end) || -1,
-      playbackRate: Number(params.playbackRate) || -1
+      start: Number(params.start),
+      end: Number(params.end),
+      playbackRate: Number(params.playbackRate)
     };
   }
 
