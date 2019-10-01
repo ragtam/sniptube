@@ -2,12 +2,7 @@ import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
 import * as fromScoreBoard from './scoreboard.reducer';
 import * as fromPlayer from './player.reducer';
 import * as fromRouter from '@ngrx/router-store';
-import {
-  Params,
-  ActivatedRouteSnapshot,
-  RouterState,
-  RouterStateSnapshot
-} from '@angular/router';
+import { Params, RouterStateSnapshot } from '@angular/router';
 
 export interface RouterStateUrl {
   url: string;

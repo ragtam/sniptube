@@ -1,17 +1,27 @@
 <nav>
   <button
     routerLink="/player"
-    [queryParams]="{ videoId: 'IXdNnw99-Ic' }"
+    [queryParams]="{
+      videoId: '_LjcTPkLIxE',
+      start: 90,
+      end: 100,
+      playbackRate: 0.75
+    }"
     routerLinkActive="active"
   >
-    Load video
+    Play slowly
   </button>
   <button
     routerLink="/player"
-    [queryParams]="{ videoId: 'IXdNnw99-Ic', autoplay: true }"
+    [queryParams]="{
+      videoId: '_LjcTPkLIxE',
+      start: 55,
+      end: 70,
+      playbackRate: 1
+    }"
     routerLinkActive="active"
   >
-    Load video and play
+    play
   </button>
   <button routerLink="/scoreboard" routerLinkActive="active">Scoreboard</button>
 </nav>

@@ -5,7 +5,10 @@ import { PlayerComponent } from './player.component';
 
 const routes: Routes = [
   { path: '', component: PlayerComponent },
-  { path: '/:videoId/:autoplay', component: PlayerComponent }
+  {
+    path: '/:videoId/:start/:end/:rate',
+    component: PlayerComponent
+  }
 ];
 
 @NgModule({
