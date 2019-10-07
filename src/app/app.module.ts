@@ -9,6 +9,10 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
 import { NavigationEffects } from './store/effects/navigation.effects';
 import { RouteSerializer } from './store/reducers/router.reducer';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,7 +22,10 @@ import { RouteSerializer } from './store/reducers/router.reducer';
     StoreModule.forRoot(reducers),
     StoreRouterConnectingModule.forRoot({ serializer: RouteSerializer }),
     EffectsModule.forRoot([NavigationEffects]),
-    StoreDevtoolsModule.instrument()
+    StoreDevtoolsModule.instrument(),
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatButtonModule
   ],
   bootstrap: [AppComponent]
 })
