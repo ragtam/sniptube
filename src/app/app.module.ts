@@ -10,6 +10,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { NavigationEffects } from './store/effects/navigation.effects';
 import { RouteSerializer } from './store/reducers/router.reducer';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
     EffectsModule.forRoot([NavigationEffects]),
     StoreDevtoolsModule.instrument(),
     BrowserAnimationsModule,
+    FlexLayoutModule,
     MatToolbarModule,
     MatButtonModule
   ],
