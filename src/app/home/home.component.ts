@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {}
 
   public goToPlayer(): void {
-    const po: PlayerConfig = { videoId: 'vLdPL3xvq3M' };
+    const po: PlayerConfig = { videoId: 'OQIYEPe6DWY' };
     this.store.dispatch(NavigationActions.goToPlayer({ config: po }));
   }
 }

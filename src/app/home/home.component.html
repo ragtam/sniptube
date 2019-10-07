@@ -1,4 +1,16 @@
-<button (click)="goToPlayer()">Play some Pink Floyd!</button>
-
-hello slider.
-<mat-slider min="1" max="100" step="1" value="1"></mat-slider>
+<br />
+<div fxLayout="row" fxLayoutAlign="center">
+  <mat-card fxFlex.sm="100%" fxFlex="70%">
+    <mat-card-title>
+      SnipTube
+    </mat-card-title>
+    <mat-card-subtitle>
+      The ultimate snipping tool for YouTube videos. Cut from the start to the
+      end. Share with your friends. Or some really CATCHY phrase.
+    </mat-card-subtitle>
+    <mat-card-content>
+      some input in future. now play some hard coded stuff:
+      <button mat-flat-button color="primary" (click)="goToPlayer()">Go</button>
+    </mat-card-content>
+  </mat-card>
+</div>

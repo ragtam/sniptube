@@ -11,6 +11,12 @@ Snipping tool for youtube. Define video, cut from start to end. Share with frien
 
 ## TODOs
 
+Small things:
+
+- [ ] move angular material controls to separate module?
+
+High Level:
+
 - [x] set up boilerplate
 - [ ] prepare mockups
 - [ ] PWA (google play store)
