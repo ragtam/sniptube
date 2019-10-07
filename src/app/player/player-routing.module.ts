@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 import { PlayerComponent } from './player.component';
 
 const routes: Routes = [
   { path: '', component: PlayerComponent },
   {
-    path: '/:videoId/:start/:end/:rate',
+    path: '/:videoId/:start/:end/:playbackRate',
     component: PlayerComponent
   }
 ];
