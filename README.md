@@ -12,6 +12,6 @@ Snipping tool for youtube. Define video, cut from start to end. Share with frien
 ## TODOs
 
 - [x] set up boilerplate
-- [] prepare mockups
-- [] PWA (google play store)
-- [] Chrome extension (open current video in app)
+- [ ] prepare mockups
+- [ ] PWA (google play store)
+- [ ] Chrome extension (open current video in app)
