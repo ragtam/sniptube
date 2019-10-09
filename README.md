@@ -13,6 +13,7 @@ Snipping tool for youtube. Define video, cut from start to end. Share with frien
 
 Small things:
 
+- [ ] start using JEST
 - [ ] move angular material controls to separate module?
 
 High Level:

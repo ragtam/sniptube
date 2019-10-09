@@ -6,8 +6,10 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-
+import { MatInputModule } from '@angular/material/input';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [HomeComponent],
@@ -17,7 +19,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatSliderModule,
     MatCardModule,
     MatButtonModule,
-    FlexLayoutModule
+    MatInputModule,
+    MatGridListModule,
+    FlexLayoutModule,
+    ReactiveFormsModule
   ]
 })
 export class HomeModule {}

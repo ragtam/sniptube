@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { State } from '../store/reducers';
 import * as NavigationActions from '../store/actions/navigation.actions';
 import { PlayerConfig } from '../player';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -10,12 +11,27 @@ import { PlayerConfig } from '../player';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  constructor(private store: Store<State>) {}
+  public form: FormGroup;
 
-  ngOnInit() {}
+  constructor(private store: Store<State>, private formBuilder: FormBuilder) {}
 
-  public goToPlayer(): void {
-    const po: PlayerConfig = { videoId: 'OQIYEPe6DWY' };
-    this.store.dispatch(NavigationActions.goToPlayer({ config: po }));
+  ngOnInit() {
+    this.form = this.formBuilder.group({
+      url: ''
+    });
+  }
+
+  public onSubmit() {
+    const url = this.form.controls.url.value;
+    const videoId = this.getVideoId(url);
+    this.goToPlayer({ videoId });
+  }
+
+  private goToPlayer(config: PlayerConfig): void {
+    this.store.dispatch(NavigationActions.goToPlayer({ config }));
+  }
+
+  private getVideoId(url: string): string {
+    return new URL(url).searchParams.get('v');
   }
 }
