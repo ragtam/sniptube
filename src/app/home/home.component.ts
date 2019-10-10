@@ -3,7 +3,13 @@ import { Store } from '@ngrx/store';
 import { State } from '../store/reducers';
 import * as NavigationActions from '../store/actions/navigation.actions';
 import { PlayerConfig } from '../player';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  AbstractControl,
+  FormControl,
+  Validators
+} from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -13,18 +19,29 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class HomeComponent implements OnInit {
   public form: FormGroup;
 
-  constructor(private store: Store<State>, private formBuilder: FormBuilder) {}
+  private readonly urlRegex = /^http(s)?:\/\/(www\.)?youtube\.com\/watch\?v=*/;
 
-  ngOnInit() {
+  public get formControls(): { [key: string]: AbstractControl } {
+    return this.form.controls;
+  }
+
+  public constructor(
+    private store: Store<State>,
+    private formBuilder: FormBuilder
+  ) {}
+
+  public ngOnInit(): void {
     this.form = this.formBuilder.group({
-      url: ''
+      url: new FormControl('', Validators.pattern(this.urlRegex))
     });
   }
 
-  public onSubmit() {
-    const url = this.form.controls.url.value;
-    const videoId = this.getVideoId(url);
-    this.goToPlayer({ videoId });
+  public onSubmit(): void {
+    if (this.form.valid) {
+      const url = this.form.controls.url.value;
+      const videoId = this.getVideoId(url);
+      this.goToPlayer({ videoId });
+    }
   }
 
   private goToPlayer(config: PlayerConfig): void {
