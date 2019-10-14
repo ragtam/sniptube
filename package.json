@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-app": "ng build --output-path docs --prod --base-href https://ragtam.github.io/snippingtube/"
+    "build-app": "ng build --output-path docs --prod --base-href https://ragtam.github.io/sniptube/"
   },
   "private": true,
   "dependencies": {
