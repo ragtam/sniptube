@@ -23,6 +23,9 @@
     >
       <mat-form-field fxFlex="70">
         <input matInput placeholder="YouTube video url" formControlName="url" />
+        <mat-error *ngIf="formControls.url.hasError('pattern')">
+          The URL is invalid.
+        </mat-error>
       </mat-form-field>
       <button (click)="onSubmit()" mat-flat-button fxFlex="20" color="primary">
         Go
