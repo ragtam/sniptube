@@ -6,9 +6,10 @@ import { StoreModule } from '@ngrx/store';
 import * as fromPlayer from './store/player.reducer';
 import { YtPlayerAngularModule } from 'yt-player-angular';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { EditorComponent } from './editor/editor.component';
 
 @NgModule({
-  declarations: [PlayerComponent],
+  declarations: [PlayerComponent, EditorComponent],
   imports: [
     CommonModule,
     PlayerRoutingModule,

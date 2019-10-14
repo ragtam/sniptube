@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from '../store/reducers';
 import * as fromRoot from '../store/reducers';
@@ -8,9 +13,10 @@ import {
   StateType,
   StateChange
 } from 'yt-player-angular';
-import { map, switchMap, filter, tap } from 'rxjs/operators';
+import { map, switchMap, filter, tap, take, delay } from 'rxjs/operators';
 import { Params } from '@angular/router';
-import { of, combineLatest, Observable } from 'rxjs';
+import { of, combineLatest, Observable, BehaviorSubject } from 'rxjs';
+import { EditorConfig } from './editor/editor.component';
 
 export interface PlayerConfig {
   videoId: string;
@@ -22,7 +28,8 @@ export interface PlayerConfig {
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss']
+  styleUrls: ['./player.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerComponent implements OnInit {
   public videoId = '';
@@ -33,6 +40,7 @@ export class PlayerComponent implements OnInit {
     related: false,
     info: false
   };
+  public editorConfig: EditorConfig;
 
   private shouldPlayFromStart: boolean;
   private isPlaybackRateSetUp: boolean;
@@ -45,13 +53,15 @@ export class PlayerComponent implements OnInit {
       switchMap(config =>
         combineLatest(this.ytPlayerService.stateChange$, of(config))
       ),
+      tap(([stateChange]) => this.initializeEditorConfig(stateChange)),
       filter(([stateChange]) => stateChange.type === StateType.PlaybackProgress)
     );
   }
 
   public constructor(
     private store: Store<State>,
-    private ytPlayerService: YtPlayerService
+    private ytPlayerService: YtPlayerService,
+    private cd: ChangeDetectorRef
   ) {}
 
   public ngOnInit(): void {
@@ -106,5 +116,15 @@ export class PlayerComponent implements OnInit {
     this.shouldPlayFromStart = true;
     this.isPlaybackRateSetUp = false;
     this.videoId = config.videoId;
+  }
+
+  private initializeEditorConfig(stateChange: StateChange) {
+    if (stateChange.type === StateType.Started && !this.editorConfig) {
+      const duration = this.ytPlayerService.getDuration();
+      const playbackRates = this.ytPlayerService.getAvailablePlaybackRates();
+      this.editorConfig = { duration, playbackRates };
+      // for unknown reasons change detector needs to be called manually
+      this.cd.detectChanges();
+    }
   }
 }
