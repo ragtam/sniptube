@@ -1,4 +1,10 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy
+} from '@angular/core';
 
 export interface EditorConfig {
   duration: number;
@@ -8,7 +14,8 @@ export interface EditorConfig {
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  styleUrls: ['./editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditorComponent implements OnChanges {
   @Input() public config: EditorConfig;
@@ -23,7 +30,7 @@ export class EditorComponent implements OnChanges {
     const c = sc && sc.config && sc.config.currentValue;
     if (c) {
       this.duration = c.duration;
-      this.rates = c.rates;
+      this.rates = c.playbackRates;
     }
   }
 }
