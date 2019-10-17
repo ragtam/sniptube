@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State } from '../store/reducers';
 import * as fromRoot from '../store/reducers';
@@ -13,10 +8,11 @@ import {
   StateType,
   StateChange
 } from 'yt-player-angular';
-import { map, switchMap, filter, tap, take, delay } from 'rxjs/operators';
+import { map, switchMap, filter, tap } from 'rxjs/operators';
 import { Params } from '@angular/router';
-import { of, combineLatest, Observable, BehaviorSubject } from 'rxjs';
+import { of, combineLatest, Observable } from 'rxjs';
 import { EditorConfig } from './editor/editor.component';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 export interface PlayerConfig {
   videoId: string;
@@ -26,12 +22,10 @@ export interface PlayerConfig {
 }
 
 @Component({
-  selector: 'app-player',
   templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./player.component.scss']
 })
-export class PlayerComponent implements OnInit {
+export class PlayerComponent implements OnInit, OnDestroy {
   public videoId = '';
   public options: PlayerOptions = {
     autoplay: true,
@@ -52,25 +46,47 @@ export class PlayerComponent implements OnInit {
       tap(config => this.initializePlayer(config)),
       switchMap(config =>
         combineLatest(this.ytPlayerService.stateChange$, of(config))
-      ),
-      tap(([stateChange]) => this.initializeEditorConfig(stateChange)),
-      filter(([stateChange]) => stateChange.type === StateType.PlaybackProgress)
+      )
     );
   }
 
   public constructor(
     private store: Store<State>,
-    private ytPlayerService: YtPlayerService,
-    private cd: ChangeDetectorRef
+    private ytPlayerService: YtPlayerService
   ) {}
 
   public ngOnInit(): void {
-    this.stateAndConfig$.subscribe(([stateChange, playerConfig]) => {
-      if (this.shouldSetPlaybackRate(playerConfig)) {
-        this.setPlaybackRate(playerConfig);
-      }
-      this.playSnippet(stateChange.payload, playerConfig);
-    });
+    this.subscribeOnStartedState();
+    this.subscribeOnPlaybackProgressState();
+  }
+
+  public ngOnDestroy(): void {}
+
+  private subscribeOnPlaybackProgressState(): void {
+    this.stateAndConfig$
+      .pipe(
+        filter(
+          ([stateChange]) => stateChange.type === StateType.PlaybackProgress
+        ),
+        untilDestroyed(this)
+      )
+      .subscribe(([stateChange, playerConfig]) => {
+        if (this.shouldSetPlaybackRate(playerConfig)) {
+          this.setPlaybackRate(playerConfig);
+        }
+        this.playSnippet(stateChange.payload, playerConfig);
+      });
+  }
+
+  private subscribeOnStartedState(): void {
+    this.stateAndConfig$
+      .pipe(
+        filter(([stateChange]) => stateChange.type === StateType.Started),
+        untilDestroyed(this)
+      )
+      .subscribe(() => {
+        this.initializeEditorConfig();
+      });
   }
 
   private playSnippet(progress: number, config: PlayerConfig): void {
@@ -118,13 +134,14 @@ export class PlayerComponent implements OnInit {
     this.videoId = config.videoId;
   }
 
-  private initializeEditorConfig(stateChange: StateChange) {
-    if (stateChange.type === StateType.Started && !this.editorConfig) {
-      const duration = this.ytPlayerService.getDuration();
-      const playbackRates = this.ytPlayerService.getAvailablePlaybackRates();
-      this.editorConfig = { duration, playbackRates };
-      // for unknown reasons change detector needs to be called manually
-      this.cd.detectChanges();
+  private initializeEditorConfig() {
+    if (this.editorConfig) {
+      return;
     }
+
+    this.editorConfig = {
+      duration: this.ytPlayerService.getDuration(),
+      playbackRates: this.ytPlayerService.getAvailablePlaybackRates()
+    };
   }
 }
