@@ -1,18 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { State } from '../store/reducers';
-import * as fromRoot from '../store/reducers';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Store, select } from "@ngrx/store";
+import { State } from "../store/reducers";
+import * as fromRoot from "../store/reducers";
 import {
   PlayerOptions,
   YtPlayerService,
-  StateType,
-  StateChange
-} from 'yt-player-angular';
-import { map, switchMap, filter, tap } from 'rxjs/operators';
-import { Params } from '@angular/router';
-import { of, combineLatest, Observable } from 'rxjs';
-import { EditorConfig } from './editor/editor.component';
-import { untilDestroyed } from 'ngx-take-until-destroy';
+  StateChange,
+  StateChangeType
+} from "yt-player-angular";
+import { map, switchMap, filter, tap } from "rxjs/operators";
+import { Params } from "@angular/router";
+import { of, combineLatest, Observable } from "rxjs";
+import { EditorConfig } from "./editor/editor.component";
+import { untilDestroyed } from "ngx-take-until-destroy";
 
 export interface PlayerConfig {
   videoId: string;
@@ -22,11 +22,11 @@ export interface PlayerConfig {
 }
 
 @Component({
-  templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss']
+  templateUrl: "./player.component.html",
+  styleUrls: ["./player.component.scss"]
 })
 export class PlayerComponent implements OnInit, OnDestroy {
-  public videoId = '';
+  public videoId = "";
   public options: PlayerOptions = {
     autoplay: true,
     modestBranding: true,
@@ -66,7 +66,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.stateAndConfig$
       .pipe(
         filter(
-          ([stateChange]) => stateChange.type === StateType.PlaybackProgress
+          ([stateChange]) =>
+            stateChange.type === StateChangeType.PlaybackProgress
         ),
         untilDestroyed(this)
       )
@@ -81,7 +82,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   private subscribeOnStartedState(): void {
     this.stateAndConfig$
       .pipe(
-        filter(([stateChange]) => stateChange.type === StateType.Started),
+        filter(([stateChange]) => stateChange.type === StateChangeType.Started),
         untilDestroyed(this)
       )
       .subscribe(() => {
