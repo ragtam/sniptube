@@ -13,6 +13,7 @@ import { Params } from "@angular/router";
 import { of, combineLatest, Observable } from "rxjs";
 import { EditorConfig } from "./editor/editor.component";
 import { untilDestroyed } from "ngx-take-until-destroy";
+import * as NavigationActions from "../store/actions/navigation.actions";
 
 export interface PlayerConfig {
   videoId: string;
@@ -61,6 +62,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {}
+
+  public onSnipConfigChange({ start, end }): void {
+    const config = {
+      start: start,
+      end: end,
+      videoId: this.videoId
+    } as PlayerConfig;
+    this.store.dispatch(NavigationActions.goToPlayer({ config }));
+  }
 
   private subscribeOnPlaybackProgressState(): void {
     this.stateAndConfig$
@@ -142,7 +152,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     this.editorConfig = {
       duration: this.ytPlayerService.getDuration(),
-      playbackRates: this.ytPlayerService.getAvailablePlaybackRates()
+      playbackRates: this.ytPlayerService.getAvailablePlaybackRates(),
+      snipStart: 0,
+      snipEnd: this.ytPlayerService.getDuration()
     };
   }
 }

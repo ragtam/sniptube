@@ -1,2 +1,17 @@
-<p>duration: {{ duration }}</p>
 <p>rates: {{ rates }}</p>
+
+<div *ngIf="options">
+  <ng5-slider
+    [(value)]="value"
+    [(highValue)]="highValue"
+    [options]="options"
+  ></ng5-slider>
+
+  <mat-select>
+    <mat-option *ngFor="let rate of rates" [value]="selectedRate">
+      {{ rate }}
+    </mat-option>
+  </mat-select>
+
+  <button (click)="onClick()" mat-flat-button>Take a snip</button>
+</div>
