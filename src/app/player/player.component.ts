@@ -63,11 +63,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {}
 
-  public onSnipConfigChange({ start, end }): void {
+  public onSnipConfigChange({ start, end, rate }): void {
     const config = {
       start: start,
       end: end,
-      videoId: this.videoId
+      videoId: this.videoId,
+      playbackRate: rate
     } as PlayerConfig;
     this.store.dispatch(NavigationActions.goToPlayer({ config }));
   }
@@ -93,10 +94,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.stateAndConfig$
       .pipe(
         filter(([stateChange]) => stateChange.type === StateChangeType.Started),
+        map(([stateChange, playerConfig]) => playerConfig),
         untilDestroyed(this)
       )
-      .subscribe(() => {
-        this.initializeEditorConfig();
+      .subscribe(playerConfig => {
+        this.initializeEditorConfig(playerConfig);
       });
   }
 
@@ -145,7 +147,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.videoId = config.videoId;
   }
 
-  private initializeEditorConfig() {
+  private initializeEditorConfig(playerConfig: PlayerConfig) {
     if (this.editorConfig) {
       return;
     }
@@ -153,8 +155,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.editorConfig = {
       duration: this.ytPlayerService.getDuration(),
       playbackRates: this.ytPlayerService.getAvailablePlaybackRates(),
-      snipStart: 0,
-      snipEnd: this.ytPlayerService.getDuration()
+      currentRate: this.ytPlayerService.getPlaybackRate(),
+      snipStart: playerConfig.start || 0,
+      snipEnd: playerConfig.end || this.ytPlayerService.getDuration()
     };
   }
 }

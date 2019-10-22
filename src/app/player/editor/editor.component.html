@@ -1,17 +1,36 @@
-<p>rates: {{ rates }}</p>
+<div *ngIf="playbackSlider">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <div mat-card-avatar><i class="far fa-edit fa-2x"></i></div>
+      <mat-card-title>Playback editor</mat-card-title>
+      <mat-card-subtitle
+        >Select start and end of the snippet. Customize playback speed
+        too.</mat-card-subtitle
+      >
+    </mat-card-header>
+    <mat-card-content fxLayout="column" fxLayoutGap="20px">
+      <mat-divider [inset]="true"></mat-divider>
+      <span><i class="fas fa-cut"></i> Time boundaries.</span>
+      <ng5-slider
+        [(value)]="playbackSlider.value"
+        [(highValue)]="playbackSlider.highValue"
+        [options]="playbackSlider.options"
+      ></ng5-slider>
 
-<div *ngIf="options">
-  <ng5-slider
-    [(value)]="value"
-    [(highValue)]="highValue"
-    [options]="options"
-  ></ng5-slider>
+      <mat-divider [inset]="true"></mat-divider>
 
-  <mat-select>
-    <mat-option *ngFor="let rate of rates" [value]="selectedRate">
-      {{ rate }}
-    </mat-option>
-  </mat-select>
-
-  <button (click)="onClick()" mat-flat-button>Take a snip</button>
+      <span><i class="fas fa-tachometer-alt"></i> Playback speed.</span>
+      <ng5-slider
+        [(value)]="rateSlider.value"
+        [options]="rateSlider.options"
+      ></ng5-slider>
+      <br />
+      <mat-divider [inset]="true"></mat-divider>
+    </mat-card-content>
+    <mat-card-actions fxLayout="row" fxLayoutAlign="center center">
+      <button (click)="onClick()" mat-flat-button color="primary" fxFlex="50%">
+        Take a snip
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </div>

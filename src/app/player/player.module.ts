@@ -9,7 +9,8 @@ import { FlexLayoutModule } from "@angular/flex-layout";
 import { EditorComponent } from "./editor/editor.component";
 import { Ng5SliderModule } from "ng5-slider";
 import { MatButtonModule } from "@angular/material/button";
-import { MatSelectModule } from "@angular/material/select";
+import { MatCardModule } from "@angular/material/card";
+import { MatDividerModule } from "@angular/material/divider";
 
 @NgModule({
   declarations: [PlayerComponent, EditorComponent],
@@ -21,7 +22,8 @@ import { MatSelectModule } from "@angular/material/select";
     FlexLayoutModule,
     Ng5SliderModule,
     MatButtonModule,
-    MatSelectModule
+    MatCardModule,
+    MatDividerModule
   ]
 })
 export class PlayerModule {}
