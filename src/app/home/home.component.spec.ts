@@ -1,16 +1,23 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { HomeComponent } from './home.component';
+import { HomeComponent } from "./home.component";
+import { Store } from "@ngrx/store";
+import { FormBuilder } from "@angular/forms";
 
-describe('HomeComponent', () => {
+describe("HomeComponent", () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HomeComponent ]
+      declarations: [HomeComponent],
+      providers: [
+        { provide: Store, useFactory: () => ({ dispatch: () => {} }) },
+        FormBuilder
+      ]
     })
-    .compileComponents();
+      .overrideComponent(HomeComponent, { set: { template: "" } })
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +26,7 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
