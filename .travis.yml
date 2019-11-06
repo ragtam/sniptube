@@ -1,6 +1,11 @@
+#environment:
 language: node_js
 node_js:
   - 12.12.0
+addons:
+  chrome: stable
+
+#build steps:
 install:
   - npm install
 script:
