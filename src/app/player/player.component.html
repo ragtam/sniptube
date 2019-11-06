@@ -1,0 +1,13 @@
+<br />
+
+<div fxLayout="row" fxLayoutAlign="center">
+  <yt-player [videoId]="videoId" [options]="options"></yt-player>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center">
+  <app-editor
+    fxFlex="640px"
+    [config]="editorConfig"
+    (snipConfigChange)="onSnipConfigChange($event)"
+  ></app-editor>
+</div>

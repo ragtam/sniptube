@@ -1,0 +1,19 @@
+#environment:
+language: node_js
+node_js:
+  - 12.12.0
+addons:
+  chrome: stable
+
+#build steps:
+install:
+  - npm install
+script:
+  - npm test
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: true
+  on:
+    branch: master
